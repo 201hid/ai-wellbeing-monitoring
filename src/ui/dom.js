@@ -1,0 +1,27 @@
+export function getDom() {
+  return {
+    webcamEl: document.querySelector("#webcam"),
+    canvasEl: document.querySelector("#overlay"),
+    performanceModeEl: document.querySelector("#performance-mode"),
+    baselineOverlayEl: document.querySelector("#baseline-overlay"),
+    baselineOverlayTextEl: document.querySelector("#baseline-overlay-text"),
+    startBaselineCaptureEl: document.querySelector("#start-baseline-capture"),
+    retakeBaselineEl: document.querySelector("#retake-baseline"),
+    statusEl: document.querySelector("#status"),
+    postureEl: document.querySelector("#posture"),
+    hudPostureEl: document.querySelector("#hud-posture"),
+    blinksEl: document.querySelector("#blinks"),
+    hudBlinksEl: document.querySelector("#hud-blinks"),
+    eyeOpenPercentEl: document.querySelector("#eye-open-percent"),
+    hudEyeOpenEl: document.querySelector("#hud-eye-open"),
+    lookingTimeEl: document.querySelector("#looking-time"),
+    hudLookingTimeEl: document.querySelector("#hud-looking"),
+    notLookingTimeEl: document.querySelector("#not-looking-time"),
+    hudNotLookingTimeEl: document.querySelector("#hud-not-looking"),
+    saveBaselineEl: document.querySelector("#save-baseline"),
+    shoulderWidthIncreaseThresholdEl: document.querySelector("#shoulder-width-increase-threshold"),
+    shoulderWidthIncreaseThresholdValueEl: document.querySelector("#shoulder-width-increase-threshold-value"),
+    logEl: null,
+    clearLogEl: null
+  };
+}

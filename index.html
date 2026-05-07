@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Wellbeing Monitoring</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <div>
+          <h1>AI Wellbeing Monitoring</h1>
+          <p>Real-time posture, blink, and eye-openness monitoring.</p>
+        </div>
+        <button id="save-baseline" type="button" class="primary-btn">Retake baseline</button>
+      </header>
+
+      <section class="content-grid">
+        <section class="camera-card">
+          <div class="stage-wrap">
+            <video id="webcam" playsinline muted></video>
+            <canvas id="overlay"></canvas>
+            <div class="camera-controls">
+              <label class="perf-toggle">
+                <input id="performance-mode" type="checkbox" />
+                <span>Performance mode</span>
+              </label>
+            </div>
+            <div class="camera-hud" aria-label="Live overlay metrics">
+              <p id="hud-posture" class="hud-pill">Posture: detecting...</p>
+              <p id="hud-blinks" class="hud-pill">Blinks: 0</p>
+              <p id="hud-eye-open" class="hud-pill">Eye openness (EAR): --%</p>
+              <p id="hud-looking" class="hud-pill">Looking at screen: 00:00</p>
+              <p id="hud-not-looking" class="hud-pill">Not looking at screen: 00:00</p>
+            </div>
+            <div id="baseline-overlay" class="baseline-overlay">
+              <p id="baseline-overlay-text">Set your best posture and start baseline capture.</p>
+              <div class="baseline-overlay-actions">
+                <button id="start-baseline-capture" type="button">Start baseline capture</button>
+                <button id="retake-baseline" type="button">Retake baseline</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="side-panel">
+          <section class="card">
+            <h2>Live Status</h2>
+            <p id="status" class="metric-pill">Starting camera...</p>
+            <p id="posture" class="metric-pill">Posture: detecting...</p>
+            <p id="blinks" class="metric-pill">Blinks: 0</p>
+          </section>
+
+          <section class="card" aria-label="Sensitivity controls">
+            <h2>Sensitivity</h2>
+            <label class="slider-row">Forward lean threshold
+              <input id="shoulder-width-increase-threshold" type="range" min="5" max="50" step="1" value="15" />
+              <span id="shoulder-width-increase-threshold-value"></span>
+            </label>
+          </section>
+
+          <section class="card" aria-label="Eye tracking">
+            <h2>Eye Tracking</h2>
+            <p id="eye-open-percent" class="metric-pill">Eye openness (EAR): --%</p>
+            <p id="looking-time" class="metric-pill">Looking at screen: 00:00</p>
+            <p id="not-looking-time" class="metric-pill">Not looking at screen: 00:00</p>
+          </section>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
