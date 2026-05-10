@@ -21,7 +21,7 @@ Then open the local URL shown in terminal and allow camera permission.
 
 | Branch | What runs |
 |--------|-----------|
-| **`dev`** | GitHub Action **CI (dev branch)** — `npm ci` + `npm run build` only (no Docker, no Azure). |
+| **`dev`** | No GitHub Actions workflow — validate locally with **`npm run build`** (or Docker Compose) before merging. |
 | **`master` / `main`** | **Build, push to ACR, deploy Container App** — Docker build, push to ACR, then **`az containerapp update`** so production pulls that digest immediately. |
 
 Intended flow: work on **`dev`**, open a PR into **`master`** / **`main`**, merge when ready. The merge is a **push to prod** and triggers build → ACR → live Container App revision in one run.

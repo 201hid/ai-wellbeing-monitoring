@@ -1,7 +1,7 @@
 # Production release: build the nginx image and push to Azure Container Registry (ACR).
 #
 # Branch workflow (intended):
-#   • Develop and commit on `dev` (optional CI: npm build — see ci-dev.yml).
+#   • Develop and commit on `dev`; merge to prod branch when ready.
 #   • When ready for production, merge `dev` → `master` or `main` (your prod branch).
 #   • This workflow runs ONLY on pushes to `master`/`main`, not on `dev`.
 #
