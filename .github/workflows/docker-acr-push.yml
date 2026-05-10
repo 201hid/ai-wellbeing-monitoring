@@ -10,9 +10,13 @@
 #   2. Enable admin user OR use a service principal with AcrPush on that registry.
 #
 # GitHub repo secrets (Settings → Secrets and variables → Actions):
-#   ACR_LOGIN_SERVER   — e.g. myregistry.azurecr.io
-#   ACR_USERNAME       — registry username (admin user name or SP app id)
-#   ACR_PASSWORD       — registry password (admin password or SP secret)
+#   ACR_LOGIN_SERVER        — e.g. myregistry.azurecr.io
+#   ACR_USERNAME            — registry username (admin user name or SP app id)
+#   ACR_PASSWORD            — registry password (admin password or SP secret)
+#   AZURE_CREDENTIALS       — service principal JSON (see Azure/login README): subscriptionId,
+#                             tenantId, clientId, clientSecret — role must allow updating the app
+#   AZURE_RESOURCE_GROUP    — e.g. aiwellbeing-rg
+#   AZURE_CONTAINER_APP_NAME — e.g. aiwellbeing-app
 #
 # Optional (baked into Vite build inside the image):
 #   VITE_MSAL_CLIENT_ID
@@ -21,10 +25,10 @@
 #
 # env.IMAGE_NAME below must match your ACR repository name (e.g. aiwellbeing-app).
 #
-# After ACR push: update Azure Container Apps (or your runtime) to pull the new tag/digest
-# (e.g. `latest` or `sha-<git-sha>`), unless you have registry webhooks / CD wired separately.
+# After ACR push: this workflow updates Azure Container Apps so production serves the new
+# revision immediately (same commit as the image digest).
 
-name: Push Docker image to Azure Container Registry
+name: Build, push to ACR, deploy Container App
 
 on:
   push:
@@ -35,7 +39,7 @@ env:
   IMAGE_NAME: aiwellbeing-app
 
 jobs:
-  build-and-push:
+  build-push-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -59,6 +63,7 @@ jobs:
             type=raw,value=latest
 
       - name: Build and push
+        id: docker_build
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -69,3 +74,19 @@ jobs:
             VITE_MSAL_CLIENT_ID=${{ secrets.VITE_MSAL_CLIENT_ID }}
             VITE_MSAL_AUTHORITY=${{ secrets.VITE_MSAL_AUTHORITY }}
             VITE_MSAL_AUTHORITY_SIGNUP=${{ secrets.VITE_MSAL_AUTHORITY_SIGNUP }}
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy Container App (new revision)
+        run: |
+          set -euo pipefail
+          az extension add --name containerapp --upgrade --yes
+          IMAGE_REF="${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}@${{ steps.docker_build.outputs.digest }}"
+          echo "Updating Container App with image: ${IMAGE_REF}"
+          az containerapp update \
+            --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+            --name "${{ secrets.AZURE_CONTAINER_APP_NAME }}" \
+            --image "${IMAGE_REF}"

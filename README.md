@@ -22,9 +22,11 @@ Then open the local URL shown in terminal and allow camera permission.
 | Branch | What runs |
 |--------|-----------|
 | **`dev`** | GitHub Action **CI (dev branch)** — `npm ci` + `npm run build` only (no Docker, no Azure). |
-| **`master` / `main`** | **Push Docker image to Azure Container Registry** — builds the image from `Dockerfile`, tags `latest` and `sha-<commit>`, pushes to ACR. |
+| **`master` / `main`** | **Build, push to ACR, deploy Container App** — Docker build, push to ACR, then **`az containerapp update`** so production pulls that digest immediately. |
 
-Intended flow: do everyday work on **`dev`**. When a release should go live, merge **`dev` → `master`** (or **`main`**), whichever you use as production. That merge triggers the image build and push. Point your Azure Container App at the new image tag/digest (or keep using `:latest` if your app is configured that way).
+Intended flow: work on **`dev`**, open a PR into **`master`** / **`main`**, merge when ready. The merge is a **push to prod** and triggers build → ACR → live Container App revision in one run.
+
+GitHub **Secrets** for prod deploy (Repository → Settings → Secrets and variables → Actions): existing **ACR\_**\* and **VITE\_**\* vars, plus **`AZURE_CREDENTIALS`** (service principal JSON), **`AZURE_RESOURCE_GROUP`**, **`AZURE_CONTAINER_APP_NAME`**. The principal needs permission to update the Container App (and the app’s managed identity already pulls from ACR, or grant AcrPull as needed).
 
 ## Notes
 
