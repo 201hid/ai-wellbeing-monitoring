@@ -1,4 +1,4 @@
-# AI Wellbeing Monitoring
+# AI Poromody
 
 Simple browser app that:
 

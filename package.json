@@ -1,7 +1,7 @@
 {
-  "name": "ai-wellbeing-monitoring",
+  "name": "ai-poromody",
   "version": "1.0.0",
-  "description": "AI wellbeing monitoring with webcam posture tracking",
+  "description": "AI Poromody — webcam posture, blink, and eye-tracking",
   "type": "module",
   "scripts": {
     "postinstall": "node scripts/copy-mediapipe-wasm.mjs",
