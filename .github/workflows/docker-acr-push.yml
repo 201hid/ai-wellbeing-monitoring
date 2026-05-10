@@ -1,4 +1,9 @@
-# Build the nginx image from Dockerfile and push to Azure Container Registry (ACR).
+# Production release: build the nginx image and push to Azure Container Registry (ACR).
+#
+# Branch workflow (intended):
+#   • Develop and commit on `dev` (optional CI: npm build — see ci-dev.yml).
+#   • When ready for production, merge `dev` → `master` or `main` (your prod branch).
+#   • This workflow runs ONLY on pushes to `master`/`main`, not on `dev`.
 #
 # Prerequisites (Azure Portal or az CLI):
 #   1. Create a Container Registry (e.g. myregistry.azurecr.io).
@@ -14,8 +19,10 @@
 #   VITE_MSAL_AUTHORITY
 #   VITE_MSAL_AUTHORITY_SIGNUP
 #
-# After push: deploy this image from ACR in Azure Container Apps, Web App for Containers,
-# or AKS — Static Web Apps does not run Docker images.
+# env.IMAGE_NAME below must match your ACR repository name (e.g. aiwellbeing-app).
+#
+# After ACR push: update Azure Container Apps (or your runtime) to pull the new tag/digest
+# (e.g. `latest` or `sha-<git-sha>`), unless you have registry webhooks / CD wired separately.
 
 name: Push Docker image to Azure Container Registry
 
@@ -25,7 +32,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: ai-wellbeing-web
+  IMAGE_NAME: aiwellbeing-app
 
 jobs:
   build-and-push:

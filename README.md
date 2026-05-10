@@ -17,6 +17,15 @@ npm run dev
 
 Then open the local URL shown in terminal and allow camera permission.
 
+## Branching and deployment
+
+| Branch | What runs |
+|--------|-----------|
+| **`dev`** | GitHub Action **CI (dev branch)** — `npm ci` + `npm run build` only (no Docker, no Azure). |
+| **`master` / `main`** | **Push Docker image to Azure Container Registry** — builds the image from `Dockerfile`, tags `latest` and `sha-<commit>`, pushes to ACR. |
+
+Intended flow: do everyday work on **`dev`**. When a release should go live, merge **`dev` → `master`** (or **`main`**), whichever you use as production. That merge triggers the image build and push. Point your Azure Container App at the new image tag/digest (or keep using `:latest` if your app is configured that way).
+
 ## Notes
 
 - This is an MVP shoulder-width baseline heuristic for forward lean + blink counting.
