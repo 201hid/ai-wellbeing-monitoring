@@ -1,4 +1,4 @@
-# AI Poromody
+# Ai Pomodoro
 
 Simple browser app that:
 

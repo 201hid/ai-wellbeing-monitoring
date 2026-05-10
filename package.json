@@ -1,7 +1,7 @@
 {
-  "name": "ai-poromody",
+  "name": "ai-pomodoro",
   "version": "1.0.0",
-  "description": "AI Poromody — webcam posture, blink, and eye-tracking",
+  "description": "Ai Pomodoro — webcam posture, blink, and eye-tracking",
   "type": "module",
   "scripts": {
     "postinstall": "node scripts/copy-mediapipe-wasm.mjs",
