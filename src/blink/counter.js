@@ -1,4 +1,4 @@
-import { BLINK_CLOSE_THRESHOLD, BLINK_OPEN_THRESHOLD } from "../config.js";
+import { BLINK_CLOSE_THRESHOLD, BLINK_OPEN_THRESHOLD } from "@/config";
 
 function getBlendshapeScore(blendshapes, name) {
   if (!blendshapes?.categories) return 0;

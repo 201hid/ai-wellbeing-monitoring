@@ -1,4 +1,4 @@
-import { CONNECTORS } from "../config.js";
+import { CONNECTORS } from "@/config";
 
 export function drawSkeleton(ctx, landmarks, width, height) {
   ctx.save();

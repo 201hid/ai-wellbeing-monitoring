@@ -23,16 +23,26 @@ Then open the local URL shown in terminal and allow camera permission.
 - It does not store video and runs inference in-browser.
 - The pose model is bundled locally at `public/pose_landmarker_lite.task` and served as `/pose_landmarker_lite.task` (avoids hanging on blocked third-party model downloads).
 - The face model is bundled locally at `public/face_landmarker.task`.
-- UI log panel removed for cleaner production UX.
+- MediaPipe WASM is copied into `public/mediapipe-wasm/` on `npm install` / before build (`scripts/copy-mediapipe-wasm.mjs`; that folder is gitignored).
 
-## Project Structure
+## Project layout
 
-- `main.js`: minimal entrypoint
-- `src/app.js`: top-level runtime orchestration
-- `src/core/`: camera/runtime primitives
-- `src/detection/`: MediaPipe landmarker setup
-- `src/posture/`: shoulder metric + baseline capture logic
-- `src/blink/`: blink counting
-- `src/eyeTracking/`: gaze, EAR openness, attention timers
-- `src/render/`: skeleton overlay drawing
-- `src/ui/`: DOM lookups and reusable UI control bindings
+Vite + vanilla ES modules. `@/` in imports maps to `src/` (see `vite.config.js` and `jsconfig.json`).
+
+| Path | Role |
+|------|------|
+| `index.html` | HTML shell; script entry `/src/main.js` |
+| `src/main.js` | Application entry (global CSS import + auth bootstrap) |
+| `src/styles/` | Stylesheets (`main.css` imported from `main.js`) |
+| `src/config/` | Build-time constants and model paths |
+| `src/app/` | Main UI/runtime orchestration (`runApp`) |
+| `src/auth/` | MSAL bootstrap |
+| `src/core/` | Camera primitives |
+| `src/detection/` | MediaPipe landmarker setup |
+| `src/posture/` | Shoulder metrics + baseline |
+| `src/blink/` | Blink counting |
+| `src/eye-tracking/` | Gaze, EAR openness, attention timers |
+| `src/render/` | Skeleton overlay |
+| `src/ui/` | DOM bindings and controls |
+| `public/` | Static assets served as-is (models; WASM copy is gitignored) |
+| `scripts/` | Build helpers (MediaPipe WASM sync) |

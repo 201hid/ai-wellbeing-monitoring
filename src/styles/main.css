@@ -31,6 +31,82 @@ body {
   color: #94a3b8;
 }
 
+.user-greeting {
+  margin: 10px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #6ee7b7;
+}
+
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.hidden-until-auth {
+  display: none !important;
+}
+
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: radial-gradient(ellipse at top, #1e293b 0%, #020617 65%);
+}
+
+.login-overlay.hidden {
+  display: none !important;
+}
+
+.login-card {
+  width: min(420px, 100%);
+  padding: 28px 26px;
+  border-radius: 16px;
+  border: 1px solid #334155;
+  background: #0b1220;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+.login-card h2 {
+  margin: 0 0 12px;
+  font-size: 24px;
+}
+
+.login-lead {
+  margin: 0 0 8px;
+  color: #cbd5e1;
+  line-height: 1.45;
+}
+
+.login-hint {
+  margin: 0 0 20px;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.login-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ghost-btn {
+  background: transparent !important;
+  border-color: #475569 !important;
+}
+
 .content-grid {
   display: grid;
   grid-template-columns: 1.8fr 1fr;
@@ -57,6 +133,34 @@ body {
   overflow: hidden;
   border: 1px solid #334155;
   background: #020617;
+}
+
+.camera-start-gate {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 20px;
+  text-align: center;
+  background: rgba(2, 6, 23, 0.88);
+  backdrop-filter: blur(4px);
+}
+
+.camera-start-gate p {
+  margin: 0;
+  max-width: 420px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #cbd5e1;
+}
+
+.camera-start-gate .primary-btn {
+  font-size: 15px;
+  padding: 12px 20px;
 }
 
 #webcam, #overlay {
@@ -134,6 +238,64 @@ body {
 #start-baseline-capture:hover,
 #retake-baseline:hover {
   border-color: #475569;
+}
+
+.secondary-btn {
+  border: 1px solid #475569;
+  background: #111c31;
+  color: #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.secondary-btn:hover {
+  border-color: #64748b;
+  color: #e2e8f0;
+}
+
+.debug-log-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.debug-log-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.debug-log-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.debug-log-header h2 {
+  margin: 0;
+}
+
+.debug-log {
+  margin: 0;
+  flex: 1;
+  min-height: 200px;
+  max-height: min(42vh, 360px);
+  overflow: auto;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #020617;
+  border: 1px solid #1e293b;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #a5b4fc;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .slider-row {

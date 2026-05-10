@@ -4,17 +4,18 @@
   "description": "AI wellbeing monitoring with webcam posture tracking",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "postinstall": "node scripts/copy-mediapipe-wasm.mjs",
+    "prebuild": "node scripts/copy-mediapipe-wasm.mjs",
+    "dev": "node scripts/copy-mediapipe-wasm.mjs && vite",
     "build": "vite build",
     "preview": "vite preview"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "devDependencies": {
     "vite": "^5.4.19"
   },
   "dependencies": {
-    "@mediapipe/tasks-vision": "^0.10.35"
+    "@azure/msal-browser": "^4.30.0",
+    "@mediapipe/tasks-vision": "^0.10.14"
   }
 }

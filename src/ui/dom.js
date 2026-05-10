@@ -1,5 +1,7 @@
 export function getDom() {
   return {
+    startCameraGateEl: document.querySelector("#camera-start-gate"),
+    startCameraBtnEl: document.querySelector("#start-camera"),
     webcamEl: document.querySelector("#webcam"),
     canvasEl: document.querySelector("#overlay"),
     performanceModeEl: document.querySelector("#performance-mode"),
@@ -21,7 +23,8 @@ export function getDom() {
     saveBaselineEl: document.querySelector("#save-baseline"),
     shoulderWidthIncreaseThresholdEl: document.querySelector("#shoulder-width-increase-threshold"),
     shoulderWidthIncreaseThresholdValueEl: document.querySelector("#shoulder-width-increase-threshold-value"),
-    logEl: null,
-    clearLogEl: null
+    logEl: document.querySelector("#debug-log"),
+    copyLogEl: document.querySelector("#copy-debug-log"),
+    clearLogEl: document.querySelector("#clear-debug-log")
   };
 }

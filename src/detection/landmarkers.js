@@ -7,7 +7,20 @@ import {
   MODEL_ASSET_PATH,
   FACE_MODEL_ASSET_PATH,
   MODEL_INIT_TIMEOUT_MS
-} from "../config.js";
+} from "@/config";
+
+/**
+ * Same-origin WASM so ad blockers / Safari / offline Docker still load MediaPipe.
+ * Must NOT end with "/" — FilesetResolver builds paths as `${base}/vision_wasm_*.js`
+ * and a trailing slash produced `mediapipe-wasm//vision...` → WASM heap faults.
+ */
+function wasmRootUrl() {
+  let base = import.meta.env.BASE_URL ?? "/";
+  if (!base.startsWith("/")) base = `/${base}`;
+  if (!base.endsWith("/")) base += "/";
+  const u = new URL("mediapipe-wasm/", window.location.origin + base);
+  return u.href.replace(/\/+$/, "");
+}
 
 function withTimeout(promise, ms, label) {
   let t;
@@ -18,11 +31,10 @@ function withTimeout(promise, ms, label) {
 }
 
 export async function createLandmarkers(log) {
-  log("Loading WASM runtime...");
+  const wasmUrl = wasmRootUrl();
+  log(`Loading WASM runtime from ${wasmUrl} ...`);
   const t0 = performance.now();
-  const vision = await FilesetResolver.forVisionTasks(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
-  );
+  const vision = await FilesetResolver.forVisionTasks(wasmUrl);
   log(`WASM runtime ready (${Math.round(performance.now() - t0)} ms).`);
 
   log(`Creating PoseLandmarker (model: ${MODEL_ASSET_PATH})...`);

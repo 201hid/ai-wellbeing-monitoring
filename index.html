@@ -4,21 +4,43 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Wellbeing Monitoring</title>
-    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <main class="app-shell">
+    <div id="login-overlay" class="login-overlay" role="dialog" aria-modal="true" aria-labelledby="login-title">
+      <div class="login-card">
+        <h2 id="login-title">Sign in</h2>
+        <p class="login-lead">Sign in with a personal Microsoft account (Outlook, Xbox, Skype) or your work/school account.</p>
+        <p class="login-hint">Uses Microsoft Entra sign-in for everyone (multitenant + consumer accounts). Optional: External ID / B2C for Google-only signup via env vars.</p>
+        <div class="login-actions">
+          <button id="btn-sign-in" type="button" class="primary-btn">Sign in</button>
+          <button id="btn-sign-up" type="button" class="primary-btn ghost-btn">Create account</button>
+        </div>
+      </div>
+    </div>
+
+    <main id="main-app" class="app-shell hidden-until-auth" aria-hidden="true">
       <header class="app-header">
         <div>
           <h1>AI Wellbeing Monitoring</h1>
           <p>Real-time posture, blink, and eye-openness monitoring.</p>
+          <p id="user-greeting" class="user-greeting" aria-live="polite"></p>
         </div>
-        <button id="save-baseline" type="button" class="primary-btn">Retake baseline</button>
+        <div class="header-actions">
+          <button id="sign-out-btn" type="button" class="secondary-btn hidden">Sign out</button>
+          <button id="save-baseline" type="button" class="primary-btn">Retake baseline</button>
+        </div>
       </header>
 
       <section class="content-grid">
         <section class="camera-card">
           <div class="stage-wrap">
+            <div id="camera-start-gate" class="camera-start-gate">
+              <p>
+                Click <strong>Start camera</strong> so your browser can ask for permission.
+                Safari, Firefox, and many Chrome profiles block camera access until you interact with the page.
+              </p>
+              <button id="start-camera" type="button" class="primary-btn">Start camera</button>
+            </div>
             <video id="webcam" playsinline muted></video>
             <canvas id="overlay"></canvas>
             <div class="camera-controls">
@@ -47,7 +69,7 @@
         <section class="side-panel">
           <section class="card">
             <h2>Live Status</h2>
-            <p id="status" class="metric-pill">Starting camera...</p>
+            <p id="status" class="metric-pill">Click Start camera on the preview (required outside embedded browsers).</p>
             <p id="posture" class="metric-pill">Posture: detecting...</p>
             <p id="blinks" class="metric-pill">Blinks: 0</p>
           </section>
@@ -66,9 +88,20 @@
             <p id="looking-time" class="metric-pill">Looking at screen: 00:00</p>
             <p id="not-looking-time" class="metric-pill">Not looking at screen: 00:00</p>
           </section>
+
+          <section class="card debug-log-card" aria-label="Debug log">
+            <div class="debug-log-header">
+              <h2>Debug log</h2>
+              <div class="debug-log-actions">
+                <button id="copy-debug-log" type="button" class="secondary-btn">Copy</button>
+                <button id="clear-debug-log" type="button" class="secondary-btn">Clear</button>
+              </div>
+            </div>
+            <pre id="debug-log" class="debug-log" aria-live="polite"></pre>
+          </section>
         </section>
       </section>
     </main>
-    <script type="module" src="/main.js"></script>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
