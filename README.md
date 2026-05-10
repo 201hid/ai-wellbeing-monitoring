@@ -21,10 +21,11 @@ Then open the local URL shown in terminal and allow camera permission.
 
 | Branch | What runs |
 |--------|-----------|
-| **`dev`** | No GitHub Actions workflow — validate locally with **`npm run build`** (or Docker Compose) before merging. |
-| **`master` / `main`** | **Build, push to ACR, deploy Container App** — Docker build, push to ACR, then **`az containerapp update`** so production pulls that digest immediately. |
+| **`dev`** | **CI** workflow — `npm ci` + **`npm run build`** on each push (catch breakage early). |
+| **PR → `master` / `main`** | Same **CI** — must pass before merge if you enable required checks in GitHub branch protection. |
+| **`master` / `main`** | **Build, push to ACR, deploy Container App** — Docker image + **`az containerapp update`** (prod only). |
 
-Intended flow: work on **`dev`**, open a PR into **`master`** / **`main`**, merge when ready. The merge is a **push to prod** and triggers build → ACR → live Container App revision in one run.
+Typical flow: push to **`dev`** (CI runs) → open **PR** into **`master`** (CI runs again) → merge → deploy workflow runs once on **`master`**.
 
 GitHub **Secrets** for prod deploy (Repository → Settings → Secrets and variables → Actions): existing **ACR\_**\* and **VITE\_**\* vars, plus **`AZURE_CREDENTIALS`** (service principal JSON), **`AZURE_RESOURCE_GROUP`**, **`AZURE_CONTAINER_APP_NAME`**. The principal needs permission to update the Container App (and the app’s managed identity already pulls from ACR, or grant AcrPull as needed).
 
