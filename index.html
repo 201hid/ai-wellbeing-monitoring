@@ -10,11 +10,16 @@
       <div class="login-card">
         <h2 id="login-title">Sign in</h2>
         <p class="login-lead">Sign in with a personal Microsoft account (Outlook, Xbox, Skype) or your work/school account.</p>
-        <p class="login-hint">Uses Microsoft Entra sign-in for everyone (multitenant + consumer accounts). Optional: External ID / B2C for Google-only signup via env vars.</p>
+        <p class="login-hint">Sign in to save your identity across sessions, or continue as a guest with no account.</p>
         <div class="login-actions">
           <button id="btn-sign-in" type="button" class="primary-btn">Sign in</button>
           <button id="btn-sign-up" type="button" class="primary-btn ghost-btn">Create account</button>
         </div>
+        <p class="login-divider" aria-hidden="true"><span>or</span></p>
+        <button id="btn-guest" type="button" class="secondary-btn login-guest-btn">
+          Continue as guest
+        </button>
+        <p class="login-guest-hint">No sign-in required. Camera and AI run only in your browser.</p>
       </div>
     </div>
 
