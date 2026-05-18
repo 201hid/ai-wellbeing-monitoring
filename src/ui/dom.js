@@ -1,6 +1,7 @@
 export function getDom() {
   return {
     startCameraGateEl: document.querySelector("#camera-start-gate"),
+    startCameraGateTextEl: document.querySelector("#camera-start-gate-text"),
     startCameraBtnEl: document.querySelector("#start-camera"),
     webcamEl: document.querySelector("#webcam"),
     canvasEl: document.querySelector("#overlay"),

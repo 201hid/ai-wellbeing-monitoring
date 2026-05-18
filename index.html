@@ -36,11 +36,89 @@
         </div>
       </header>
 
-      <section class="content-grid">
+      <section id="pomodoro-home" class="pomodoro-home" aria-labelledby="pomodoro-home-title">
+        <div class="pomodoro-home-card">
+          <h2 id="pomodoro-home-title">New work session</h2>
+          <p class="pomodoro-home-lead">
+            Pick a session type, then set how many focus rounds and how long each focus block and break should last.
+          </p>
+          <form id="pomodoro-setup-form" class="pomodoro-setup-form">
+            <fieldset class="pomodoro-mode-fieldset">
+              <legend class="pomodoro-field-label">Session type</legend>
+              <label class="pomodoro-mode-option">
+                <input
+                  type="radio"
+                  name="pomodoroMode"
+                  value="normal"
+                  checked
+                />
+                <span class="pomodoro-mode-card">
+                  <strong>Normal Pomodoro</strong>
+                  <span>Timer only — no camera or AI</span>
+                </span>
+              </label>
+              <label class="pomodoro-mode-option">
+                <input type="radio" name="pomodoroMode" value="ai" />
+                <span class="pomodoro-mode-card">
+                  <strong>AI-powered Pomodoro</strong>
+                  <span>Camera + posture baseline required before focus starts</span>
+                </span>
+              </label>
+            </fieldset>
+            <label class="pomodoro-field">
+              <span class="pomodoro-field-label">Number of splits (focus rounds)</span>
+              <input
+                id="pomodoro-splits"
+                name="splits"
+                type="number"
+                min="1"
+                max="20"
+                value="4"
+                required
+              />
+            </label>
+            <label class="pomodoro-field">
+              <span class="pomodoro-field-label">Focus time (minutes)</span>
+              <input
+                id="pomodoro-work-min"
+                name="workMinutes"
+                type="number"
+                min="1"
+                max="120"
+                value="25"
+                required
+              />
+            </label>
+            <label class="pomodoro-field">
+              <span class="pomodoro-field-label">Break time (minutes)</span>
+              <input
+                id="pomodoro-break-min"
+                name="breakMinutes"
+                type="number"
+                min="1"
+                max="60"
+                value="5"
+                required
+              />
+            </label>
+            <p class="pomodoro-home-defaults">Defaults: 4 splits · 25 min focus · 5 min break</p>
+            <button type="submit" class="primary-btn pomodoro-start-btn">Start work session</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="workspace" class="content-grid hidden" aria-hidden="true">
+        <p
+          id="pomodoro-ai-setup-banner"
+          class="pomodoro-ai-setup-banner"
+          hidden
+        >
+          Turn on your camera and complete baseline capture to start your focus timer.
+        </p>
         <section class="camera-card">
           <div class="stage-wrap">
             <div id="camera-start-gate" class="camera-start-gate">
-              <p>
+              <p id="camera-start-gate-text">
                 Click <strong>Start camera</strong> so your browser can ask for permission.
                 Safari, Firefox, and many Chrome profiles block camera access until you interact with the page.
               </p>
@@ -72,6 +150,18 @@
         </section>
 
         <section class="side-panel">
+          <section class="card pomodoro-card" aria-label="Pomodoro timer">
+            <h2>Pomodoro</h2>
+            <p id="pomodoro-plan-summary" class="pomodoro-plan-summary"></p>
+            <p id="pomodoro-phase" class="metric-pill pomodoro-phase-pill" data-phase="idle">Ready</p>
+            <p id="pomodoro-timer" class="pomodoro-timer-display" aria-live="polite">25:00</p>
+            <p id="pomodoro-progress" class="metric-pill">Configure a session on the home screen</p>
+            <div class="pomodoro-session-actions">
+              <button id="pomodoro-skip-phase" type="button" class="secondary-btn">Skip phase</button>
+              <button id="pomodoro-end-session" type="button" class="secondary-btn">End session</button>
+            </div>
+          </section>
+
           <section class="card">
             <h2>Live Status</h2>
             <p id="status" class="metric-pill">Click Start camera on the preview (required outside embedded browsers).</p>

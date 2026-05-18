@@ -3,6 +3,7 @@ export function createBaselineManager({
   captureMs,
   minSamples,
   onOverlay,
+  onBaselineSaved,
   log
 }) {
   const state = {
@@ -65,12 +66,13 @@ export function createBaselineManager({
         state.samples.reduce((sum, s) => sum + s.shoulderWidth, 0) / count;
       state.baseline = { shoulderWidth };
       state.phase = "done";
-      onOverlay("Baseline saved. Live posture monitoring is active.", false);
+      onOverlay("Baseline saved. You can start your focus round.", false);
       log(
         `Baseline saved from ${count} frames: shoulderWidth=${shoulderWidth.toFixed(
           3
         )}`
       );
+      onBaselineSaved?.(state.baseline);
       return;
     }
 

@@ -380,6 +380,206 @@ body {
   justify-content: center;
 }
 
+.pomodoro-mode-fieldset {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.pomodoro-mode-fieldset legend {
+  margin-bottom: 10px;
+}
+
+.pomodoro-mode-option {
+  display: block;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.pomodoro-mode-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pomodoro-mode-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  background: #020617;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.pomodoro-mode-card strong {
+  font-size: 15px;
+  color: #e2e8f0;
+}
+
+.pomodoro-mode-card span:last-child {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.pomodoro-mode-option input:checked + .pomodoro-mode-card {
+  border-color: #6366f1;
+  background: #111c31;
+}
+
+.pomodoro-mode-option input:focus-visible + .pomodoro-mode-card {
+  outline: 2px solid #818cf8;
+  outline-offset: 2px;
+}
+
+.pomodoro-ai-setup-banner {
+  grid-column: 1 / -1;
+  margin: 0 0 4px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #6366f1;
+  background: rgba(99, 102, 241, 0.12);
+  color: #c7d2fe;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+#workspace.workspace-mode-normal {
+  grid-template-columns: 1fr;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#workspace.workspace-mode-normal .camera-card,
+#workspace.workspace-mode-normal .pomodoro-ai-setup-banner {
+  display: none;
+}
+
+#workspace.workspace-mode-normal .side-panel > .card:not(.pomodoro-card) {
+  display: none;
+}
+
+#main-app.pomodoro-session-normal #save-baseline {
+  display: none !important;
+}
+
+.pomodoro-phase-pill[data-phase="setup"] {
+  border-color: #f59e0b;
+  color: #fcd34d;
+}
+
+.pomodoro-home {
+  margin-bottom: 20px;
+}
+
+.pomodoro-home-card {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 28px 26px;
+  border-radius: 16px;
+  border: 1px solid #334155;
+  background: #0b1220;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.pomodoro-home-card h2 {
+  margin: 0 0 10px;
+  font-size: 24px;
+}
+
+.pomodoro-home-lead {
+  margin: 0 0 20px;
+  color: #94a3b8;
+  line-height: 1.45;
+  font-size: 14px;
+}
+
+.pomodoro-setup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pomodoro-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: #cbd5e1;
+}
+
+.pomodoro-field input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+  background: #020617;
+  color: #e2e8f0;
+  font-size: 16px;
+}
+
+.pomodoro-field input[type="number"]:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: 1px;
+}
+
+.pomodoro-home-defaults {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.pomodoro-start-btn {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.pomodoro-plan-summary {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.pomodoro-timer-display {
+  margin: 0 0 10px;
+  font-size: 42px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: #f8fafc;
+  text-align: center;
+}
+
+.pomodoro-phase-pill[data-phase="work"] {
+  border-color: #6366f1;
+  color: #a5b4fc;
+}
+
+.pomodoro-phase-pill[data-phase="break"] {
+  border-color: #14b8a6;
+  color: #5eead4;
+}
+
+.pomodoro-phase-pill[data-phase="complete"] {
+  border-color: #22c55e;
+  color: #86efac;
+}
+
+.pomodoro-session-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.pomodoro-session-actions .secondary-btn {
+  flex: 1;
+  min-width: 120px;
+}
+
 @media (max-width: 980px) {
   .content-grid { grid-template-columns: 1fr; }
 }

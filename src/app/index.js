@@ -20,10 +20,20 @@ import { bindRangeControl } from "@/ui/controls.js";
 import { createLogger } from "@/ui/logger.js";
 import { getDom } from "@/ui/dom.js";
 
-export async function runApp() {
+/**
+ * @param {{
+ *   startTimer: () => void;
+ *   setAwaitingSetup: (message: string) => void;
+ * } | null} aiSession
+ */
+export async function runApp(aiSession = null) {
+  /** @type {{ startTimer: () => void; setAwaitingSetup: (msg: string) => void } | null} */
+  let pendingAiSession = aiSession;
+
   const dom = getDom();
   const {
     startCameraGateEl,
+    startCameraGateTextEl,
     startCameraBtnEl,
     webcamEl,
     canvasEl,
@@ -141,12 +151,33 @@ export async function runApp() {
     baselineOverlayEl.style.display = visible ? "flex" : "none";
   }
 
+  function tryStartPomodoroAfterBaseline() {
+    if (!pendingAiSession || !baseline.hasBaseline()) return;
+    pendingAiSession.startTimer();
+    pendingAiSession = null;
+  }
+
   const baseline = createBaselineManager({
     countdownMs: BASELINE_COUNTDOWN_MS,
     captureMs: BASELINE_CAPTURE_MS,
     minSamples: BASELINE_MIN_SAMPLES,
     onOverlay: setBaselineOverlay,
+    onBaselineSaved: () => {
+      log("Baseline saved — starting Pomodoro focus timer.");
+      tryStartPomodoroAfterBaseline();
+    },
     log
+  });
+
+  document.addEventListener("pomodoro-ai-session", (event) => {
+    pendingAiSession = event.detail;
+    if (baseline.hasBaseline()) {
+      tryStartPomodoroAfterBaseline();
+    } else {
+      pendingAiSession?.setAwaitingSetup(
+        "Turn on your camera, then capture your posture baseline. The focus timer starts when baseline is saved."
+      );
+    }
   });
   const blinkCounter = createBlinkCounter();
   const eyeTrackingTimers = createEyeTrackingTimers();
@@ -164,6 +195,21 @@ export async function runApp() {
   if (saveBaselineEl) saveBaselineEl.addEventListener("click", startBaseline);
   if (startBaselineCaptureEl) startBaselineCaptureEl.addEventListener("click", startBaseline);
   if (retakeBaselineEl) retakeBaselineEl.addEventListener("click", startBaseline);
+
+  if (aiSession) {
+    const gateText =
+      startCameraGateTextEl ||
+      startCameraGateEl?.querySelector("#camera-start-gate-text, p");
+    if (gateText) {
+      gateText.innerHTML =
+        "AI-powered session: click <strong>Start camera</strong>, then capture your posture baseline before the focus timer begins.";
+    }
+    statusEl.textContent =
+      "Start camera, then complete baseline capture. The Pomodoro timer starts after baseline is saved.";
+    aiSession.setAwaitingSetup(
+      "Turn on your camera, then capture your posture baseline. The focus timer starts when baseline is saved."
+    );
+  }
 
   if (!globalThis.isSecureContext) {
     log(
@@ -221,7 +267,11 @@ export async function runApp() {
         log("Detect path: IMAGE mode, CPU delegate, 2D canvas frames (avoids WebGL video texture path).");
         if (startCameraGateEl) startCameraGateEl.style.display = "none";
 
-        statusEl.textContent = "Camera ready. Detecting posture and eye gaze...";
+        const workspaceEl = document.getElementById("workspace");
+        const aiMode = workspaceEl?.classList.contains("workspace-mode-ai");
+        statusEl.textContent = aiMode && !baseline.hasBaseline()
+          ? "Camera ready. Capture your baseline to start the focus timer."
+          : "Camera ready. Detecting posture and eye gaze...";
         postureEl.textContent = "Posture: starting detector loop...";
         if (hudPostureEl) hudPostureEl.textContent = postureEl.textContent;
         if (blinksEl) blinksEl.textContent = `Blinks: ${blinkCounter.getCount()}`;
