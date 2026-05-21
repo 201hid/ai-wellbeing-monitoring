@@ -17,6 +17,13 @@ export function createEyeTrackingTimers() {
         notLookingMs += deltaMs;
       }
     },
+    reset() {
+      lookingMs = 0;
+      notLookingMs = 0;
+    },
+    getTotals() {
+      return { lookingMs, notLookingMs };
+    },
     getUiText() {
       return {
         looking: `Looking at screen: ${formatDuration(lookingMs)}`,
