@@ -10,6 +10,17 @@
       href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("focusdesk-theme");
+          if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+          else document.documentElement.dataset.theme = "light";
+        } catch (e) {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="login-overlay" class="login-overlay" role="dialog" aria-modal="true" aria-labelledby="login-title">
@@ -61,6 +72,10 @@
       </div>
       <div class="login-scrim" aria-hidden="true"></div>
       <div class="login-card">
+        <div class="theme-toggle" role="group" aria-label="Color theme">
+          <button type="button" data-theme-set="light" aria-pressed="true">Light</button>
+          <button type="button" data-theme-set="dark" aria-pressed="false">Dark</button>
+        </div>
         <p class="login-eyebrow">Secure access</p>
         <h2 id="login-title">Sign in</h2>
         <p class="login-lead">Sign in with a personal Microsoft account (Outlook, Xbox, Skype) or your work/school account.</p>
@@ -86,6 +101,10 @@
           <p id="user-greeting" class="user-greeting" aria-live="polite"></p>
         </div>
         <div class="header-actions">
+          <div class="theme-toggle" role="group" aria-label="Color theme">
+            <button type="button" data-theme-set="light" aria-pressed="true">Light</button>
+            <button type="button" data-theme-set="dark" aria-pressed="false">Dark</button>
+          </div>
           <button id="sign-out-btn" type="button" class="secondary-btn hidden">Sign out</button>
           <button id="finish-session-header" type="button" class="primary-btn hidden">Finish session</button>
         </div>

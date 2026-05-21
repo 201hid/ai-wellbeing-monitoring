@@ -1,22 +1,8 @@
-/* ── Sci-fi theme tokens ── */
+/* Theme tokens: src/styles/themes.css (light + dark) */
 :root {
-  --bg-deep: #030712;
-  --bg-mid: #0a0f1a;
-  --bg-panel: rgba(8, 14, 28, 0.72);
-  --border-dim: rgba(34, 211, 238, 0.18);
-  --border-glow: rgba(34, 211, 238, 0.45);
-  --cyan: #22d3ee;
-  --cyan-dim: #0891b2;
-  --magenta: #e879f9;
-  --lime: #4ade80;
-  --text: #e2e8f0;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
   --font-display: "Orbitron", system-ui, sans-serif;
   --font-body: "Exo 2", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
-  --glow-cyan: 0 0 20px rgba(34, 211, 238, 0.35);
-  --glow-cyan-strong: 0 0 32px rgba(34, 211, 238, 0.5);
 }
 
 * {
@@ -31,11 +17,11 @@ body {
   color: var(--text);
   background-color: var(--bg-deep);
   background-image:
-    linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px),
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(34, 211, 238, 0.12), transparent),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(232, 121, 249, 0.06), transparent),
-    linear-gradient(180deg, #050a14 0%, var(--bg-deep) 40%, #020617 100%);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    radial-gradient(ellipse 80% 50% at 50% -20%, var(--grid-glow-top), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 100%, var(--grid-glow-corner), transparent),
+    linear-gradient(180deg, var(--bg-gradient-top) 0%, var(--bg-deep) 40%, var(--bg-gradient-bottom) 100%);
   background-size: 48px 48px, 48px 48px, 100% 100%, 100% 100%, 100% 100%;
   background-attachment: fixed;
 }
@@ -50,10 +36,10 @@ body::before {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0, 0, 0, 0.03) 2px,
-    rgba(0, 0, 0, 0.03) 4px
+    var(--scanline) 2px,
+    var(--scanline) 4px
   );
-  opacity: 0.4;
+  opacity: var(--scanline-opacity);
 }
 
 .app-shell {
@@ -83,7 +69,7 @@ body::before {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--cyan);
-  text-shadow: var(--glow-cyan);
+  text-shadow: var(--eyebrow-glow);
 }
 
 .app-header h1 {
@@ -93,11 +79,11 @@ body::before {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  background: linear-gradient(135deg, #f0fdfa 0%, var(--cyan) 50%, #a5f3fc 100%);
+  background: linear-gradient(135deg, var(--title-grad-1) 0%, var(--title-grad-2) 50%, var(--title-grad-3) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 0 24px rgba(34, 211, 238, 0.4));
+  filter: drop-shadow(var(--title-drop-shadow));
 }
 
 .app-tagline {
@@ -114,7 +100,7 @@ body::before {
   font-size: 13px;
   font-weight: 500;
   color: var(--lime);
-  text-shadow: 0 0 12px rgba(74, 222, 128, 0.4);
+  text-shadow: var(--greeting-glow);
 }
 
 .header-actions {
@@ -143,7 +129,7 @@ body::before {
   justify-content: center;
   padding: 24px;
   overflow: hidden;
-  background: var(--bg-deep);
+  background: var(--overlay-solid);
 }
 
 .login-overlay.hidden {
@@ -181,9 +167,17 @@ body::before {
   font-family: var(--font-body);
   font-size: 13px;
   font-weight: 600;
-  color: #f0fdfa;
+  color: var(--btn-text);
   background: linear-gradient(180deg, rgba(34, 211, 238, 0.25) 0%, rgba(8, 145, 178, 0.35) 100%);
   box-shadow: var(--glow-cyan);
+}
+
+[data-theme="light"] .primary-btn,
+[data-theme="light"] #start-session,
+[data-theme="light"] #finish-session,
+[data-theme="light"] #start-new-session,
+[data-theme="light"] .login-preview-btn {
+  background: linear-gradient(180deg, #0e7490 0%, #0891b2 100%);
 }
 
 .login-preview-stage {
@@ -194,9 +188,9 @@ body::before {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 45% 55% at 52% 42%, rgba(34, 211, 238, 0.22) 0%, transparent 70%),
-    radial-gradient(ellipse 80% 90% at 50% 100%, rgba(15, 23, 42, 0.9) 0%, #020617 55%),
-    linear-gradient(145deg, #0c1222 0%, #020617 100%);
+    radial-gradient(ellipse 45% 55% at 52% 42%, var(--stage-feed-1) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 90% at 50% 100%, var(--stage-feed-2) 0%, var(--stage-feed-3) 55%),
+    linear-gradient(145deg, var(--bg-mid) 0%, var(--stage-feed-3) 100%);
 }
 
 .login-preview-skeleton {
@@ -222,7 +216,7 @@ body::before {
   border-radius: 2px;
   border: 1px solid var(--border-dim);
   border-top: 2px solid var(--cyan);
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--metric-bg);
   font-family: var(--font-mono);
   font-size: 11px;
   text-align: center;
@@ -238,8 +232,7 @@ body::before {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background:
-    radial-gradient(ellipse 55% 50% at 50% 45%, rgba(3, 7, 18, 0.35) 0%, rgba(3, 7, 18, 0.82) 55%, rgba(3, 7, 18, 0.94) 100%);
+  background: var(--login-scrim);
 }
 
 @media (max-width: 720px) {
@@ -397,7 +390,7 @@ body::before {
   border: 1px solid var(--border-dim);
   border-radius: 2px;
   backdrop-filter: blur(12px);
-  box-shadow: inset 0 0 40px rgba(34, 211, 238, 0.03);
+  box-shadow: var(--card-inset);
 }
 
 .card-hud::before {
@@ -446,10 +439,8 @@ body::before {
   border-radius: 2px;
   overflow: hidden;
   border: 1px solid var(--border-glow);
-  background: #000;
-  box-shadow:
-    inset 0 0 60px rgba(34, 211, 238, 0.06),
-    var(--glow-cyan);
+  background: var(--stage-bg);
+  box-shadow: var(--stage-inset), var(--glow-cyan);
 }
 
 .stage-wrap::after {
@@ -462,8 +453,8 @@ body::before {
     0deg,
     transparent,
     transparent 3px,
-    rgba(0, 0, 0, 0.12) 3px,
-    rgba(0, 0, 0, 0.12) 4px
+    var(--stage-scanline) 3px,
+    var(--stage-scanline) 4px
   );
   opacity: 0.35;
 }
@@ -479,7 +470,7 @@ body::before {
   gap: 16px;
   padding: 24px;
   text-align: center;
-  background: rgba(3, 7, 18, 0.9);
+  background: var(--overlay-muted);
   backdrop-filter: blur(6px);
 }
 
@@ -532,7 +523,7 @@ body::before {
   padding: 8px 12px;
   border-radius: 2px;
   border: 1px solid var(--border-glow);
-  background: rgba(3, 7, 18, 0.75);
+  background: var(--hud-bg);
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text);
@@ -560,13 +551,13 @@ body::before {
   border-radius: 2px;
   border: 1px solid var(--border-dim);
   border-left: 3px solid var(--cyan);
-  background: rgba(3, 7, 18, 0.82);
+  background: var(--hud-bg);
   color: var(--text);
   font-family: var(--font-mono);
   font-size: 11px;
   line-height: 1.35;
   backdrop-filter: blur(4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--glow-cyan);
 }
 
 /* ── Metrics ── */
@@ -574,7 +565,7 @@ body::before {
   margin: 0 0 8px;
   padding: 10px 12px;
   border-radius: 2px;
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--metric-bg);
   border: 1px solid var(--border-dim);
   font-family: var(--font-mono);
   font-size: 12px;
@@ -597,7 +588,7 @@ body::before {
   letter-spacing: 0.04em;
   border: 1px solid var(--cyan);
   background: linear-gradient(180deg, rgba(34, 211, 238, 0.25) 0%, rgba(8, 145, 178, 0.35) 100%);
-  color: #f0fdfa;
+  color: var(--btn-text);
   border-radius: 2px;
   padding: 10px 16px;
   cursor: pointer;
@@ -624,7 +615,7 @@ body::before {
   font-family: var(--font-body);
   font-weight: 500;
   border: 1px solid var(--border-glow);
-  background: rgba(15, 23, 42, 0.8);
+  background: var(--metric-bg);
   color: var(--text-muted);
   border-radius: 2px;
   padding: 8px 14px;
@@ -678,7 +669,7 @@ body::before {
   justify-content: center;
   gap: 16px;
   padding: 24px;
-  background: rgba(3, 7, 18, 0.82);
+  background: var(--overlay-muted);
   text-align: center;
   backdrop-filter: blur(6px);
 }
@@ -696,7 +687,7 @@ body::before {
   padding: 12px 16px;
   border: 1px solid var(--border-glow);
   border-radius: 2px;
-  background: rgba(8, 14, 28, 0.9);
+  background: var(--overlay-panel);
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.45;
@@ -711,7 +702,7 @@ body::before {
 
 .session-overlay--ended {
   z-index: 9;
-  background: rgba(3, 7, 18, 0.92);
+  background: var(--overlay-muted);
 }
 
 .session-results {
@@ -730,7 +721,7 @@ body::before {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   text-align: center;
-  color: #f0fdfa;
+  color: var(--text);
   text-shadow: var(--glow-cyan);
 }
 
@@ -753,7 +744,7 @@ body::before {
   padding: 16px 12px;
   border: 1px solid var(--border-dim);
   border-radius: 2px;
-  background: rgba(8, 14, 28, 0.85);
+  background: var(--overlay-panel);
 }
 
 .score-card-productivity {
@@ -779,7 +770,7 @@ body::before {
   font-size: 42px;
   font-weight: 700;
   line-height: 1;
-  color: #f0fdfa;
+  color: var(--text);
   text-shadow: var(--glow-cyan);
 }
 
@@ -842,12 +833,12 @@ body::before {
   overflow: auto;
   padding: 12px 14px;
   border-radius: 2px;
-  background: rgba(2, 6, 23, 0.9);
-  border: 1px solid rgba(232, 121, 249, 0.25);
+  background: var(--debug-bg);
+  border: 1px solid var(--debug-border);
   font-family: var(--font-mono);
   font-size: 11px;
   line-height: 1.5;
-  color: #c4b5fd;
+  color: var(--debug-text);
   white-space: pre-wrap;
   word-break: break-word;
   scrollbar-color: var(--cyan-dim) transparent;
@@ -863,6 +854,45 @@ body::before {
 }
 
 /* ── Responsive ── */
+/* ── Theme toggle ── */
+.theme-toggle {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--border-dim);
+  border-radius: 4px;
+  background: var(--metric-bg);
+  gap: 2px;
+}
+
+.theme-toggle button {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 7px 12px;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.theme-toggle button.is-active {
+  background: var(--cyan);
+  color: var(--btn-text);
+  box-shadow: var(--glow-cyan);
+}
+
+.theme-toggle button:not(.is-active):hover {
+  color: var(--cyan);
+}
+
+.login-card .theme-toggle {
+  margin-bottom: 4px;
+}
+
 @media (max-width: 980px) {
   .content-grid {
     grid-template-columns: 1fr;
