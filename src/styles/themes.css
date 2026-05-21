@@ -1,0 +1,109 @@
+/* Light mode — clean desk aesthetic */
+[data-theme="light"] {
+  --bg-deep: #e8f0f8;
+  --bg-mid: #f4f8fc;
+  --bg-panel: rgba(255, 255, 255, 0.88);
+  --border-dim: rgba(8, 145, 178, 0.22);
+  --border-glow: rgba(8, 145, 178, 0.42);
+  --cyan: #0891b2;
+  --cyan-dim: #0e7490;
+  --magenta: #c026d3;
+  --lime: #059669;
+  --text: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #64748b;
+  --glow-cyan: 0 4px 20px rgba(8, 145, 178, 0.12);
+  --glow-cyan-strong: 0 8px 28px rgba(8, 145, 178, 0.18);
+  --grid-line: rgba(8, 145, 178, 0.07);
+  --grid-glow-top: rgba(8, 145, 178, 0.1);
+  --grid-glow-corner: rgba(192, 132, 252, 0.06);
+  --bg-gradient-top: #f8fbff;
+  --bg-gradient-bottom: #dce8f4;
+  --scanline: rgba(15, 23, 42, 0.025);
+  --scanline-opacity: 0.25;
+  --title-grad-1: #0f766e;
+  --title-grad-2: #0891b2;
+  --title-grad-3: #22d3ee;
+  --title-drop-shadow: 0 2px 16px rgba(8, 145, 178, 0.2);
+  --eyebrow-glow: none;
+  --greeting-glow: none;
+  --btn-text: #f8fafc;
+  --overlay-solid: #e8f0f8;
+  --overlay-panel: rgba(255, 255, 255, 0.95);
+  --overlay-muted: rgba(241, 245, 249, 0.95);
+  --stage-bg: #1e293b;
+  --stage-feed-1: rgba(8, 145, 178, 0.18);
+  --stage-feed-2: rgba(226, 232, 240, 0.95);
+  --stage-feed-3: #cbd5e1;
+  --stage-scanline: rgba(255, 255, 255, 0.08);
+  --metric-bg: rgba(255, 255, 255, 0.75);
+  --hud-bg: rgba(255, 255, 255, 0.92);
+  --login-scrim: radial-gradient(
+    ellipse 55% 50% at 50% 45%,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(232, 240, 248, 0.88) 55%,
+    rgba(220, 232, 244, 0.96) 100%
+  );
+  --debug-text: #6d28d9;
+  --debug-border: rgba(192, 132, 252, 0.35);
+  --debug-bg: rgba(255, 255, 255, 0.9);
+  --card-inset: inset 0 0 40px rgba(8, 145, 178, 0.04);
+  --stage-inset: inset 0 0 40px rgba(8, 145, 178, 0.06);
+}
+
+/* Dark mode — sci-fi HUD (original look) */
+[data-theme="dark"] {
+  --bg-deep: #030712;
+  --bg-mid: #0a0f1a;
+  --bg-panel: rgba(8, 14, 28, 0.72);
+  --border-dim: rgba(34, 211, 238, 0.18);
+  --border-glow: rgba(34, 211, 238, 0.45);
+  --cyan: #22d3ee;
+  --cyan-dim: #0891b2;
+  --magenta: #e879f9;
+  --lime: #4ade80;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --glow-cyan: 0 0 20px rgba(34, 211, 238, 0.35);
+  --glow-cyan-strong: 0 0 32px rgba(34, 211, 238, 0.5);
+  --grid-line: rgba(34, 211, 238, 0.03);
+  --grid-glow-top: rgba(34, 211, 238, 0.12);
+  --grid-glow-corner: rgba(232, 121, 249, 0.06);
+  --bg-gradient-top: #050a14;
+  --bg-gradient-bottom: #020617;
+  --scanline: rgba(0, 0, 0, 0.03);
+  --scanline-opacity: 0.4;
+  --title-grad-1: #f0fdfa;
+  --title-grad-2: #22d3ee;
+  --title-grad-3: #a5f3fc;
+  --title-drop-shadow: 0 0 24px rgba(34, 211, 238, 0.4);
+  --eyebrow-glow: var(--glow-cyan);
+  --greeting-glow: 0 0 12px rgba(74, 222, 128, 0.4);
+  --btn-text: #f0fdfa;
+  --overlay-solid: #030712;
+  --overlay-panel: rgba(8, 14, 28, 0.9);
+  --overlay-muted: rgba(3, 7, 18, 0.9);
+  --stage-bg: #000;
+  --stage-feed-1: rgba(34, 211, 238, 0.22);
+  --stage-feed-2: rgba(15, 23, 42, 0.9);
+  --stage-feed-3: #020617;
+  --stage-scanline: rgba(0, 0, 0, 0.12);
+  --metric-bg: rgba(15, 23, 42, 0.6);
+  --hud-bg: rgba(3, 7, 18, 0.82);
+  --login-scrim: radial-gradient(
+    ellipse 55% 50% at 50% 45%,
+    rgba(3, 7, 18, 0.35) 0%,
+    rgba(3, 7, 18, 0.82) 55%,
+    rgba(3, 7, 18, 0.94) 100%
+  );
+  --debug-text: #c4b5fd;
+  --debug-border: rgba(232, 121, 249, 0.25);
+  --debug-bg: rgba(2, 6, 23, 0.9);
+  --card-inset: inset 0 0 40px rgba(34, 211, 238, 0.03);
+  --stage-inset: inset 0 0 60px rgba(34, 211, 238, 0.06);
+}
+
+:root {
+  color-scheme: light dark;
+}
