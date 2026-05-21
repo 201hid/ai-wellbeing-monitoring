@@ -1,7 +1,7 @@
 import { PublicClientApplication } from "@azure/msal-browser";
 
 const SCOPES = ["openid", "profile", "email"];
-const GUEST_SESSION_KEY = "ai-pomodoro-guest";
+const GUEST_SESSION_KEY = "focusdesk-ai-guest";
 
 function buildMsalConfig() {
   const clientId = import.meta.env.VITE_MSAL_CLIENT_ID;

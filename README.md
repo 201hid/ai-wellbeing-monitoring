@@ -1,4 +1,4 @@
-# Ai Pomodoro
+# FocusDesk AI
 
 Simple browser app that:
 
