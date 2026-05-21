@@ -4,10 +4,64 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ai Pomodoro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div id="login-overlay" class="login-overlay" role="dialog" aria-modal="true" aria-labelledby="login-title">
+      <div class="login-app-preview" aria-hidden="true">
+        <div class="login-preview-shell">
+          <header class="login-preview-header app-header">
+            <div>
+              <p class="app-eyebrow">Neural wellbeing interface</p>
+              <h1>Ai Pomodoro</h1>
+              <p class="app-tagline">Real-time posture, blink, and eye-openness monitoring.</p>
+            </div>
+            <div class="header-actions">
+              <span class="login-preview-btn">Finish session</span>
+            </div>
+          </header>
+          <section class="login-preview-grid content-grid">
+            <section class="login-preview-camera camera-card card-hud">
+              <div class="login-preview-stage stage-wrap">
+                <div class="login-preview-feed"></div>
+                <div class="login-preview-skeleton" aria-hidden="true"></div>
+                <div class="login-preview-hud camera-hud">
+                  <p class="hud-pill">Posture: good</p>
+                  <p class="hud-pill">Blinks: 12</p>
+                  <p class="hud-pill">Eye openness: 78%</p>
+                  <p class="hud-pill">Looking at screen: 18:42</p>
+                </div>
+              </div>
+            </section>
+            <section class="login-preview-side side-panel">
+              <section class="card card-hud">
+                <h2><span class="card-icon" aria-hidden="true">◈</span> Live Status</h2>
+                <p class="metric-pill">Session active</p>
+                <p class="metric-pill">Posture: good</p>
+              </section>
+              <section class="card card-hud">
+                <h2><span class="card-icon" aria-hidden="true">◎</span> Eye Tracking</h2>
+                <p class="metric-pill">Looking at screen: 18:42</p>
+              </section>
+              <section class="card card-hud login-preview-scores">
+                <h2><span class="card-icon" aria-hidden="true">◆</span> Session scores</h2>
+                <div class="login-preview-score-row">
+                  <span class="login-preview-score-pill">Productivity 84</span>
+                  <span class="login-preview-score-pill login-preview-score-pill--well">Wellbeing 91</span>
+                </div>
+              </section>
+            </section>
+          </section>
+        </div>
+      </div>
+      <div class="login-scrim" aria-hidden="true"></div>
       <div class="login-card">
+        <p class="login-eyebrow">Secure access</p>
         <h2 id="login-title">Sign in</h2>
         <p class="login-lead">Sign in with a personal Microsoft account (Outlook, Xbox, Skype) or your work/school account.</p>
         <p class="login-hint">Sign in to save your identity across sessions, or continue as a guest with no account.</p>
@@ -26,18 +80,19 @@
     <main id="main-app" class="app-shell hidden-until-auth" aria-hidden="true">
       <header class="app-header">
         <div>
+          <p class="app-eyebrow">Neural wellbeing interface</p>
           <h1>Ai Pomodoro</h1>
-          <p>Real-time posture, blink, and eye-openness monitoring.</p>
+          <p class="app-tagline">Real-time posture, blink, and eye-openness monitoring.</p>
           <p id="user-greeting" class="user-greeting" aria-live="polite"></p>
         </div>
         <div class="header-actions">
           <button id="sign-out-btn" type="button" class="secondary-btn hidden">Sign out</button>
-          <button id="save-baseline" type="button" class="primary-btn">Retake baseline</button>
+          <button id="finish-session-header" type="button" class="primary-btn hidden">Finish session</button>
         </div>
       </header>
 
       <section class="content-grid">
-        <section class="camera-card">
+        <section class="camera-card card-hud">
           <div class="stage-wrap">
             <div id="camera-start-gate" class="camera-start-gate">
               <p>
@@ -61,34 +116,52 @@
               <p id="hud-looking" class="hud-pill">Looking at screen: 00:00</p>
               <p id="hud-not-looking" class="hud-pill">Not looking at screen: 00:00</p>
             </div>
-            <div id="baseline-overlay" class="baseline-overlay">
-              <p id="baseline-overlay-text">Set your best posture and start baseline capture.</p>
-              <div class="baseline-overlay-actions">
-                <button id="start-baseline-capture" type="button">Start baseline capture</button>
-                <button id="retake-baseline" type="button">Retake baseline</button>
+            <div id="session-overlay" class="session-overlay">
+              <div id="session-overlay-panel">
+                <p id="session-overlay-text">Start the camera, then begin a session to track focus and wellbeing.</p>
+                <div class="session-overlay-actions">
+                  <button id="start-session" type="button" class="primary-btn" disabled>Start session</button>
+                  <button id="finish-session" type="button" class="primary-btn hidden">Finish session</button>
+                </div>
+              </div>
+              <div id="session-results-panel" class="session-results hidden" aria-live="polite" aria-labelledby="session-ended-heading">
+                <h3 id="session-ended-heading" class="session-ended-title">Session ended</h3>
+                <div class="score-grid" role="group" aria-label="Session scores">
+                  <div class="score-card score-card-productivity">
+                    <span class="score-label">Productivity</span>
+                    <span id="productivity-score" class="score-value">—</span>
+                    <span class="score-hint">Looking at screen</span>
+                  </div>
+                  <div class="score-card score-card-wellbeing">
+                    <span class="score-label">Wellbeing</span>
+                    <span id="wellbeing-score" class="score-value">—</span>
+                    <span class="score-hint">Eyes &amp; posture</span>
+                  </div>
+                </div>
+                <button id="start-new-session" type="button" class="primary-btn">Start new session</button>
               </div>
             </div>
           </div>
         </section>
 
         <section class="side-panel">
-          <section class="card">
-            <h2>Live Status</h2>
+          <section class="card card-hud">
+            <h2><span class="card-icon" aria-hidden="true">◈</span> Live Status</h2>
             <p id="status" class="metric-pill">Click Start camera on the preview (required outside embedded browsers).</p>
             <p id="posture" class="metric-pill">Posture: detecting...</p>
             <p id="blinks" class="metric-pill">Blinks: 0</p>
           </section>
 
-          <section class="card" aria-label="Sensitivity controls">
-            <h2>Sensitivity</h2>
+          <section class="card card-hud" aria-label="Sensitivity controls">
+            <h2><span class="card-icon" aria-hidden="true">◇</span> Sensitivity</h2>
             <label class="slider-row">Forward lean threshold
               <input id="shoulder-width-increase-threshold" type="range" min="5" max="50" step="1" value="15" />
               <span id="shoulder-width-increase-threshold-value"></span>
             </label>
           </section>
 
-          <section class="card" aria-label="Eye tracking">
-            <h2>Eye Tracking</h2>
+          <section class="card card-hud" aria-label="Eye tracking">
+            <h2><span class="card-icon" aria-hidden="true">◎</span> Eye Tracking</h2>
             <p id="eye-open-percent" class="metric-pill">Eye openness (EAR): --%</p>
             <p id="looking-time" class="metric-pill">Looking at screen: 00:00</p>
             <p id="not-looking-time" class="metric-pill">Not looking at screen: 00:00</p>

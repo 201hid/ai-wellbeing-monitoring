@@ -3,7 +3,9 @@ export function createBaselineManager({
   captureMs,
   minSamples,
   onOverlay,
-  log
+  log,
+  onCalibrated,
+  onCalibrationFailed
 }) {
   const state = {
     phase: "idle",
@@ -17,8 +19,8 @@ export function createBaselineManager({
     state.phase = "countdown";
     state.countdownEndMs = performance.now() + countdownMs;
     state.samples = [];
-    onOverlay("Hold your best posture. Capturing baseline in 3...", true);
-    log("Baseline capture countdown started.");
+    onOverlay("Hold your best posture. Session starts in 3...", true);
+    log("Session calibration countdown started.");
   }
 
   function update(nowMs, metrics) {
@@ -30,14 +32,14 @@ export function createBaselineManager({
         state.phase = "capturing";
         state.captureEndMs = nowMs + captureMs;
         state.samples = [];
-        onOverlay("Capturing baseline... keep still.", true);
-        log("Baseline capture sampling started.");
+        onOverlay("Calibrating posture… keep still.", true);
+        log("Session calibration sampling started.");
       } else {
         onOverlay(
-          `Hold still. Capturing baseline in ${Math.max(
+          `Hold still. Starting session in ${Math.max(
             1,
             Math.ceil(remainingMs / 1000)
-          )}...`,
+          )}…`,
           true
         );
       }
@@ -52,12 +54,13 @@ export function createBaselineManager({
       if (count < minSamples) {
         state.phase = "idle";
         onOverlay(
-          "Not enough stable frames. Ensure face + shoulders are visible, then try again.",
+          "Not enough stable frames. Ensure face and shoulders are visible, then try Start session again.",
           true
         );
-        log(`Baseline capture failed: only ${count} valid samples.`, {
+        log(`Session calibration failed: only ${count} valid samples.`, {
           level: "warn"
         });
+        onCalibrationFailed?.();
         return;
       }
 
@@ -65,17 +68,14 @@ export function createBaselineManager({
         state.samples.reduce((sum, s) => sum + s.shoulderWidth, 0) / count;
       state.baseline = { shoulderWidth };
       state.phase = "done";
-      onOverlay("Baseline saved. Live posture monitoring is active.", false);
+      onOverlay("Calibration complete.", false);
       log(
-        `Baseline saved from ${count} frames: shoulderWidth=${shoulderWidth.toFixed(
+        `Posture reference saved from ${count} frames: shoulderWidth=${shoulderWidth.toFixed(
           3
         )}`
       );
+      onCalibrated?.();
       return;
-    }
-
-    if (!state.baseline) {
-      onOverlay("Set your best posture, then press Start baseline capture.", true);
     }
   }
 
@@ -83,6 +83,11 @@ export function createBaselineManager({
     start,
     update,
     getBaseline: () => state.baseline,
-    hasBaseline: () => Boolean(state.baseline)
+    hasBaseline: () => Boolean(state.baseline),
+    getPhase: () => state.phase,
+    clearBaseline: () => {
+      state.baseline = null;
+      state.phase = "idle";
+    }
   };
 }

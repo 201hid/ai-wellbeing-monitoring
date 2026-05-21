@@ -1,7 +1,7 @@
 import {
-  BASELINE_CAPTURE_MS,
-  BASELINE_COUNTDOWN_MS,
-  BASELINE_MIN_SAMPLES
+  SESSION_CALIBRATION_CAPTURE_MS,
+  SESSION_CALIBRATION_COUNTDOWN_MS,
+  SESSION_CALIBRATION_MIN_SAMPLES
 } from "@/config";
 import {
   DEFAULT_VIDEO_CONSTRAINTS,
@@ -13,7 +13,7 @@ import { createBlinkCounter } from "@/blink/counter.js";
 import { getEyeOpennessPercent } from "@/eye-tracking/ear.js";
 import { createEyeTrackingTimers } from "@/eye-tracking/timers.js";
 import { isLookingAtScreen } from "@/eye-tracking/gaze.js";
-import { createBaselineManager } from "@/posture/baseline.js";
+import { createSessionManager } from "@/session/manager.js";
 import { getShoulderMetrics, assessShoulderPosture } from "@/posture/shoulder.js";
 import { drawSkeleton } from "@/render/skeleton.js";
 import { bindRangeControl } from "@/ui/controls.js";
@@ -28,10 +28,16 @@ export async function runApp() {
     webcamEl,
     canvasEl,
     performanceModeEl,
-    baselineOverlayEl,
-    baselineOverlayTextEl,
-    startBaselineCaptureEl,
-    retakeBaselineEl,
+    sessionOverlayEl,
+    sessionOverlayPanelEl,
+    sessionOverlayTextEl,
+    startSessionEl,
+    finishSessionEl,
+    finishSessionHeaderEl,
+    sessionResultsPanelEl,
+    productivityScoreEl,
+    wellbeingScoreEl,
+    startNewSessionEl,
     statusEl,
     postureEl,
     hudPostureEl,
@@ -43,7 +49,6 @@ export async function runApp() {
     hudLookingTimeEl,
     notLookingTimeEl,
     hudNotLookingTimeEl,
-    saveBaselineEl,
     shoulderWidthIncreaseThresholdEl,
     shoulderWidthIncreaseThresholdValueEl,
     logEl,
@@ -135,17 +140,66 @@ export async function runApp() {
     });
   }
 
-  function setBaselineOverlay(message, visible = true) {
-    if (!baselineOverlayEl || !baselineOverlayTextEl) return;
-    baselineOverlayTextEl.textContent = message;
-    baselineOverlayEl.style.display = visible ? "flex" : "none";
+  function setSessionOverlay(message, visible = true) {
+    if (!sessionOverlayEl) return;
+    if (sessionOverlayTextEl && message) {
+      sessionOverlayTextEl.textContent = message;
+    }
+    sessionOverlayEl.style.display = visible ? "flex" : "none";
   }
 
-  const baseline = createBaselineManager({
-    countdownMs: BASELINE_COUNTDOWN_MS,
-    captureMs: BASELINE_CAPTURE_MS,
-    minSamples: BASELINE_MIN_SAMPLES,
-    onOverlay: setBaselineOverlay,
+  function showSessionResults({ productivity, wellbeing }) {
+    if (productivityScoreEl) productivityScoreEl.textContent = String(productivity);
+    if (wellbeingScoreEl) wellbeingScoreEl.textContent = String(wellbeing);
+    if (sessionOverlayPanelEl) sessionOverlayPanelEl.classList.add("hidden");
+    if (sessionResultsPanelEl) sessionResultsPanelEl.classList.remove("hidden");
+    if (sessionOverlayEl) {
+      sessionOverlayEl.style.display = "flex";
+      sessionOverlayEl.classList.add("session-overlay--ended");
+    }
+    if (statusEl) {
+      statusEl.textContent = `Session ended — Productivity ${productivity}, Wellbeing ${wellbeing}`;
+    }
+  }
+
+  function hideSessionResults() {
+    if (sessionResultsPanelEl) sessionResultsPanelEl.classList.add("hidden");
+    if (sessionOverlayPanelEl) sessionOverlayPanelEl.classList.remove("hidden");
+    sessionOverlayEl?.classList.remove("session-overlay--ended");
+  }
+
+  function syncSessionChrome(phase) {
+    const active = phase === "active";
+    const calibrating = phase === "calibrating";
+    const showFinish = active;
+    const showStart = phase === "idle" && !calibrating;
+
+    finishSessionEl?.classList.toggle("hidden", !showFinish);
+    finishSessionHeaderEl?.classList.toggle("hidden", !showFinish);
+    startSessionEl?.classList.toggle("hidden", !showStart);
+
+    if (phase === "results") {
+      finishSessionEl?.classList.add("hidden");
+      finishSessionHeaderEl?.classList.add("hidden");
+      startSessionEl?.classList.add("hidden");
+    }
+  }
+
+  const session = createSessionManager({
+    countdownMs: SESSION_CALIBRATION_COUNTDOWN_MS,
+    captureMs: SESSION_CALIBRATION_CAPTURE_MS,
+    minSamples: SESSION_CALIBRATION_MIN_SAMPLES,
+    onOverlay: setSessionOverlay,
+    onPhaseChange: (phase) => {
+      syncSessionChrome(phase);
+      if (phase === "active") {
+        eyeTrackingTimers.reset();
+      }
+    },
+    onResults: (results) => {
+      showSessionResults(results);
+      syncSessionChrome("results");
+    },
     log
   });
   const blinkCounter = createBlinkCounter();
@@ -160,10 +214,23 @@ export async function runApp() {
     }
   });
 
-  const startBaseline = () => baseline.start();
-  if (saveBaselineEl) saveBaselineEl.addEventListener("click", startBaseline);
-  if (startBaselineCaptureEl) startBaselineCaptureEl.addEventListener("click", startBaseline);
-  if (retakeBaselineEl) retakeBaselineEl.addEventListener("click", startBaseline);
+  const finishSession = () => session.finishSession();
+  const startSession = () => session.startSession();
+
+  startSessionEl?.addEventListener("click", startSession);
+  finishSessionEl?.addEventListener("click", finishSession);
+  finishSessionHeaderEl?.addEventListener("click", finishSession);
+  startNewSessionEl?.addEventListener("click", () => {
+    hideSessionResults();
+    session.dismissResults();
+    syncSessionChrome("idle");
+  });
+
+  setSessionOverlay(
+    "Start the camera, then press Start session to track focus and wellbeing.",
+    true
+  );
+  syncSessionChrome("idle");
 
   if (!globalThis.isSecureContext) {
     log(
@@ -220,6 +287,11 @@ export async function runApp() {
         log("Landmarkers ready; starting render loop.");
         log("Detect path: IMAGE mode, CPU delegate, 2D canvas frames (avoids WebGL video texture path).");
         if (startCameraGateEl) startCameraGateEl.style.display = "none";
+        startSessionEl?.removeAttribute("disabled");
+        setSessionOverlay(
+          "Press Start session when you are ready. We will calibrate your posture, then track focus and wellbeing.",
+          true
+        );
 
         statusEl.textContent = "Camera ready. Detecting posture and eye gaze...";
         postureEl.textContent = "Posture: starting detector loop...";
@@ -270,6 +342,7 @@ export async function runApp() {
               lastVideoTime = webcamEl.currentTime;
               let poseResult;
               let faceResult = null;
+              let openness = null;
 
               try {
                 if (!frameCtx) {
@@ -287,7 +360,7 @@ export async function runApp() {
                 const blinkCount = blinkCounter.update(faceResult);
                 if (blinksEl) blinksEl.textContent = `Blinks: ${blinkCount}`;
                 if (hudBlinksEl && blinksEl) hudBlinksEl.textContent = blinksEl.textContent;
-                const openness = getEyeOpennessPercent(faceResult?.faceLandmarks);
+                openness = getEyeOpennessPercent(faceResult?.faceLandmarks);
                 if (eyeOpenPercentEl) {
                   eyeOpenPercentEl.textContent =
                     openness == null
@@ -309,7 +382,9 @@ export async function runApp() {
               }
 
               const isLooking = isLookingAtScreen(faceResult?.faceLandmarks);
-              eyeTrackingTimers.update(isLooking, deltaMs);
+              if (session.isActive()) {
+                eyeTrackingTimers.update(isLooking, deltaMs);
+              }
               const times = eyeTrackingTimers.getUiText();
               if (lookingTimeEl) lookingTimeEl.textContent = times.looking;
               if (hudLookingTimeEl && lookingTimeEl) hudLookingTimeEl.textContent = lookingTimeEl.textContent;
@@ -330,24 +405,50 @@ export async function runApp() {
                   postureEl.style.borderColor = "#f59e0b";
                   postureEl.style.color = "#f59e0b";
                   if (hudPostureEl) hudPostureEl.textContent = postureEl.textContent;
-                  statusEl.textContent = "Need both shoulders visible for shoulder-length check.";
-                  if (!baseline.hasBaseline()) {
-                    setBaselineOverlay("Need both shoulders visible before baseline capture.");
+                  statusEl.textContent = "Need both shoulders visible for posture tracking.";
+                  if (session.isActive()) {
+                    session.recordFrame(deltaMs, {
+                      isLooking,
+                      eyeOpenness: openness,
+                      postureGood: false,
+                      hasPostureReading: false
+                    });
+                  } else if (session.isCalibrating()) {
+                    setSessionOverlay(
+                      "Need both shoulders visible to start the session.",
+                      true
+                    );
                   }
                 } else {
-                  baseline.update(globalThis.performance.now(), metrics);
+                  const nowMs = globalThis.performance.now();
+                  session.updateCalibration(nowMs, metrics);
                   const posture = assessShoulderPosture(
                     metrics,
-                    baseline.getBaseline(),
+                    session.getBaseline(),
                     thresholds.shoulderWidthIncreaseLimit
                   );
+                  const postureGood = posture.label === "Posture: good";
+                  if (session.isActive()) {
+                    session.recordFrame(deltaMs, {
+                      isLooking,
+                      eyeOpenness: openness,
+                      postureGood,
+                      hasPostureReading: session.hasBaseline()
+                    });
+                  }
                   postureEl.textContent = posture.label;
                   postureEl.style.borderColor = posture.color;
                   postureEl.style.color = posture.color;
                   if (hudPostureEl) hudPostureEl.textContent = postureEl.textContent;
-                  statusEl.textContent = baseline.hasBaseline()
-                    ? `Monitoring with baseline | ${posture.details}`
-                    : `Baseline required first | ${posture.details}`;
+                  if (session.isActive()) {
+                    statusEl.textContent = `Session active | ${posture.details}`;
+                  } else if (session.isCalibrating()) {
+                    statusEl.textContent = "Calibrating posture for session…";
+                  } else if (session.hasBaseline()) {
+                    statusEl.textContent = `Reference saved | ${posture.details}`;
+                  } else {
+                    statusEl.textContent = "Press Start session to begin tracking.";
+                  }
                 }
               } else {
                 if (lastPersonSeen) {
@@ -359,7 +460,17 @@ export async function runApp() {
                 postureEl.style.color = "#94a3b8";
                 postureEl.style.borderColor = "#334155";
                 if (hudPostureEl) hudPostureEl.textContent = postureEl.textContent;
-                statusEl.textContent = "Camera ready. Detecting posture...";
+                statusEl.textContent = session.isActive()
+                  ? "Session active — move into frame for posture."
+                  : "Camera ready. Detecting posture...";
+                if (session.isActive()) {
+                  session.recordFrame(deltaMs, {
+                    isLooking,
+                    eyeOpenness: openness,
+                    postureGood: false,
+                    hasPostureReading: false
+                  });
+                }
               }
             }
           } catch (e) {

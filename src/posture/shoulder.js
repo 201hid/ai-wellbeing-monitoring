@@ -15,9 +15,9 @@ export function getShoulderMetrics(landmarks) {
 export function assessShoulderPosture(metrics, baselineMetrics, shoulderWidthIncreaseLimit) {
   if (!baselineMetrics) {
     return {
-      label: "Posture: baseline required",
+      label: "Posture: session required",
       color: "#f59e0b",
-      details: "capture baseline first"
+      details: "start a session to calibrate posture"
     };
   }
 
