@@ -1,7 +1,7 @@
 {
-  "name": "ai-pomodoro",
+  "name": "focusdesk-ai",
   "version": "1.0.0",
-  "description": "Ai Pomodoro — webcam posture, blink, and eye-tracking",
+  "description": "FocusDesk AI — webcam posture, blink, and eye-tracking",
   "type": "module",
   "scripts": {
     "postinstall": "node scripts/copy-mediapipe-wasm.mjs",
