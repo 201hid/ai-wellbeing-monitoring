@@ -29,9 +29,6 @@ export function getDom() {
     shoulderWidthIncreaseThresholdEl: document.querySelector("#shoulder-width-increase-threshold"),
     shoulderWidthIncreaseThresholdValueEl: document.querySelector(
       "#shoulder-width-increase-threshold-value"
-    ),
-    logEl: document.querySelector("#debug-log"),
-    copyLogEl: document.querySelector("#copy-debug-log"),
-    clearLogEl: document.querySelector("#clear-debug-log")
+    )
   };
 }

@@ -362,12 +362,26 @@ body::before {
 
 .ghost-btn {
   background: transparent !important;
-  border-color: var(--border-glow) !important;
+  border: 2px solid var(--cyan) !important;
   box-shadow: none !important;
+  color: var(--cyan) !important;
 }
 
 .ghost-btn:hover {
-  background: rgba(34, 211, 238, 0.08) !important;
+  background: rgba(34, 211, 238, 0.12) !important;
+  border-color: var(--cyan) !important;
+  color: var(--cyan) !important;
+}
+
+[data-theme="light"] .ghost-btn {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: var(--cyan-dim) !important;
+  color: var(--cyan-dim) !important;
+}
+
+[data-theme="light"] .ghost-btn:hover {
+  background: rgba(8, 145, 178, 0.12) !important;
+  color: var(--cyan-dim) !important;
 }
 
 /* ── Layout ── */
@@ -791,69 +805,6 @@ body::before {
   }
 }
 
-/* ── Debug log ── */
-.debug-log-card {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  border-color: rgba(232, 121, 249, 0.2);
-}
-
-.debug-log-card::before {
-  background: linear-gradient(90deg, transparent, var(--magenta), transparent);
-}
-
-.debug-log-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.debug-log-header h2 {
-  font-family: var(--font-display);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  color: var(--magenta);
-}
-
-.debug-log-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.debug-log {
-  margin: 0;
-  flex: 1;
-  min-height: 200px;
-  max-height: min(42vh, 360px);
-  overflow: auto;
-  padding: 12px 14px;
-  border-radius: 2px;
-  background: var(--debug-bg);
-  border: 1px solid var(--debug-border);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  line-height: 1.5;
-  color: var(--debug-text);
-  white-space: pre-wrap;
-  word-break: break-word;
-  scrollbar-color: var(--cyan-dim) transparent;
-}
-
-.debug-log::-webkit-scrollbar {
-  width: 6px;
-}
-
-.debug-log::-webkit-scrollbar-thumb {
-  background: var(--cyan-dim);
-  border-radius: 2px;
-}
-
-/* ── Responsive ── */
 /* ── Theme toggle ── */
 .theme-toggle {
   display: inline-flex;
