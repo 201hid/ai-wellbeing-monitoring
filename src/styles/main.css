@@ -707,6 +707,20 @@ body::before {
   line-height: 1.45;
 }
 
+.session-calibration-disclaimer {
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--border-glow);
+  border-radius: 2px;
+  background: var(--overlay-panel);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--text-primary);
+  max-width: 420px;
+}
+
 .session-overlay-actions {
   display: flex;
   gap: 10px;

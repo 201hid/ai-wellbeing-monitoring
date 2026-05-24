@@ -19,7 +19,7 @@ export function createBaselineManager({
     state.phase = "countdown";
     state.countdownEndMs = performance.now() + countdownMs;
     state.samples = [];
-    onOverlay("Hold your best posture. Session starts in 3...", true);
+    onOverlay("Baseline starting in 3…", true);
     log("Session calibration countdown started.");
   }
 
@@ -32,11 +32,11 @@ export function createBaselineManager({
         state.phase = "capturing";
         state.captureEndMs = nowMs + captureMs;
         state.samples = [];
-        onOverlay("Calibrating posture… keep still.", true);
+        onOverlay("Recording your posture baseline… keep still.", true);
         log("Session calibration sampling started.");
       } else {
         onOverlay(
-          `Hold still. Starting session in ${Math.max(
+          `Baseline starting in ${Math.max(
             1,
             Math.ceil(remainingMs / 1000)
           )}…`,

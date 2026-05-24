@@ -1,6 +1,7 @@
 import {
   SESSION_CALIBRATION_CAPTURE_MS,
   SESSION_CALIBRATION_COUNTDOWN_MS,
+  SESSION_CALIBRATION_DISCLAIMER,
   SESSION_CALIBRATION_MIN_SAMPLES
 } from "@/config";
 import {
@@ -30,6 +31,7 @@ export async function runApp() {
     performanceModeEl,
     sessionOverlayEl,
     sessionOverlayPanelEl,
+    sessionCalibrationDisclaimerEl,
     sessionOverlayTextEl,
     startSessionEl,
     finishSessionEl,
@@ -71,6 +73,10 @@ export async function runApp() {
   log(
     `Context | isSecureContext=${globalThis.isSecureContext} mediaDevices=${Boolean(navigator.mediaDevices?.getUserMedia)}`
   );
+
+  if (sessionCalibrationDisclaimerEl) {
+    sessionCalibrationDisclaimerEl.textContent = SESSION_CALIBRATION_DISCLAIMER;
+  }
 
   const ctx = canvasEl.getContext("2d");
 
@@ -130,6 +136,7 @@ export async function runApp() {
     finishSessionEl?.classList.toggle("hidden", !showFinish);
     finishSessionHeaderEl?.classList.toggle("hidden", !showFinish);
     startSessionEl?.classList.toggle("hidden", !showStart);
+    sessionCalibrationDisclaimerEl?.classList.toggle("hidden", !calibrating);
 
     if (phase === "results") {
       finishSessionEl?.classList.add("hidden");

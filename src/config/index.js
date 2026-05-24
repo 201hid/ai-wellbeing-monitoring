@@ -21,5 +21,8 @@ export const SESSION_CALIBRATION_COUNTDOWN_MS = 3000;
 export const SESSION_CALIBRATION_CAPTURE_MS = 4000;
 export const SESSION_CALIBRATION_MIN_SAMPLES = 12;
 
+export const SESSION_CALIBRATION_DISCLAIMER =
+  "Please keep your posture straight and look at the camera with your eyes open.";
+
 export const BLINK_CLOSE_THRESHOLD = 0.6;
 export const BLINK_OPEN_THRESHOLD = 0.25;
