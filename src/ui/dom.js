@@ -7,6 +7,7 @@ export function getDom() {
     performanceModeEl: document.querySelector("#performance-mode"),
     sessionOverlayEl: document.querySelector("#session-overlay"),
     sessionOverlayPanelEl: document.querySelector("#session-overlay-panel"),
+    sessionCalibrationDisclaimerEl: document.querySelector("#session-calibration-disclaimer"),
     sessionOverlayTextEl: document.querySelector("#session-overlay-text"),
     startSessionEl: document.querySelector("#start-session"),
     finishSessionEl: document.querySelector("#finish-session"),
