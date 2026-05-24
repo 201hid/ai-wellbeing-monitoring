@@ -285,7 +285,7 @@ export async function runApp() {
         log("Initializing MediaPipe landmarkers…");
         const { poseLandmarker, faceLandmarker } = await createLandmarkers(log);
         log("Landmarkers ready; starting render loop.");
-        log("Detect path: IMAGE mode, CPU delegate, 2D canvas frames (avoids WebGL video texture path).");
+        log("Detect path: IMAGE mode, CPU delegate, shared WebGL binding canvas, 2D frame snapshots.");
         if (startCameraGateEl) startCameraGateEl.style.display = "none";
         startSessionEl?.removeAttribute("disabled");
         setSessionOverlay(
@@ -355,8 +355,37 @@ export async function runApp() {
                   frameCanvas.height = detectHeight;
                 }
                 frameCtx.drawImage(webcamEl, 0, 0, detectWidth, detectHeight);
-                poseResult = poseLandmarker.detect(frameCanvas);
-                faceResult = faceLandmarker.detect(frameCanvas);
+
+                try {
+                  poseResult = poseLandmarker.detect(frameCanvas);
+                } catch (poseErr) {
+                  const now = globalThis.performance.now();
+                  if (now - lastDetectErrorLog > 2000) {
+                    lastDetectErrorLog = now;
+                    const msg =
+                      poseErr instanceof Error
+                        ? `${poseErr.name}: ${poseErr.message}\n${poseErr.stack || ""}`
+                        : String(poseErr);
+                    log(`pose detect failed: ${msg}`, { level: "error" });
+                  }
+                  poseResult = null;
+                }
+
+                try {
+                  faceResult = faceLandmarker.detect(frameCanvas);
+                } catch (faceErr) {
+                  const now = globalThis.performance.now();
+                  if (now - lastDetectErrorLog > 2000) {
+                    lastDetectErrorLog = now;
+                    const msg =
+                      faceErr instanceof Error
+                        ? `${faceErr.name}: ${faceErr.message}\n${faceErr.stack || ""}`
+                        : String(faceErr);
+                    log(`face detect failed: ${msg}`, { level: "error" });
+                  }
+                  faceResult = null;
+                }
+
                 const blinkCount = blinkCounter.update(faceResult);
                 if (blinksEl) blinksEl.textContent = `Blinks: ${blinkCount}`;
                 if (hudBlinksEl && blinksEl) hudBlinksEl.textContent = blinksEl.textContent;
@@ -374,9 +403,10 @@ export async function runApp() {
                   lastDetectErrorLog = now;
                   const msg =
                     e instanceof Error ? `${e.name}: ${e.message}\n${e.stack || ""}` : String(e);
-                  log(`pose/face detect failed: ${msg}`, { level: "error" });
+                  log(`frame prep failed: ${msg}`, { level: "error" });
                 }
                 poseResult = null;
+                faceResult = null;
                 if (eyeOpenPercentEl) eyeOpenPercentEl.textContent = "Eye openness (EAR): --%";
                 if (hudEyeOpenEl && eyeOpenPercentEl) hudEyeOpenEl.textContent = eyeOpenPercentEl.textContent;
               }
