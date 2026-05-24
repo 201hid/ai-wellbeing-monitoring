@@ -8,6 +8,7 @@ import {
   FACE_MODEL_ASSET_PATH,
   MODEL_INIT_TIMEOUT_MS
 } from "@/config";
+import { acquireMediaPipeCanvas } from "@/detection/mediapipeCanvas.js";
 
 /**
  * Same-origin WASM so ad blockers / Safari / offline Docker still load MediaPipe.
@@ -37,10 +38,13 @@ export async function createLandmarkers(log) {
   const vision = await FilesetResolver.forVisionTasks(wasmUrl);
   log(`WASM runtime ready (${Math.round(performance.now() - t0)} ms).`);
 
+  const mpCanvas = acquireMediaPipeCanvas(log);
+
   log(`Creating PoseLandmarker (model: ${MODEL_ASSET_PATH})...`);
   const t1 = performance.now();
   const poseLandmarker = await withTimeout(
     PoseLandmarker.createFromOptions(vision, {
+      canvas: mpCanvas,
       baseOptions: { modelAssetPath: MODEL_ASSET_PATH, delegate: "CPU" },
       runningMode: "IMAGE",
       numPoses: 1
@@ -54,10 +58,11 @@ export async function createLandmarkers(log) {
   const t2 = performance.now();
   const faceLandmarker = await withTimeout(
     FaceLandmarker.createFromOptions(vision, {
+      canvas: mpCanvas,
       baseOptions: { modelAssetPath: FACE_MODEL_ASSET_PATH, delegate: "CPU" },
       runningMode: "IMAGE",
       numFaces: 1,
-      outputFaceBlendshapes: true
+      outputFaceBlendshapes: false
     }),
     MODEL_INIT_TIMEOUT_MS,
     "FaceLandmarker.createFromOptions"
