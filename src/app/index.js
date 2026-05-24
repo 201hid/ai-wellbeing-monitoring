@@ -116,20 +116,16 @@ export async function runApp() {
   );
 
   const ctx = canvasEl.getContext("2d");
-  const frameCanvas = document.createElement("canvas");
-  const frameCtx = frameCanvas.getContext("2d", { willReadFrequently: true });
 
   const thresholds = { shoulderWidthIncreaseLimit: 0.15 };
   const perfMode = {
     enabled: false,
-    detectIntervalMs: 0,
-    inputScale: 1
+    detectIntervalMs: 0
   };
 
   function applyPerformanceMode(enabled) {
     perfMode.enabled = enabled;
     perfMode.detectIntervalMs = enabled ? 100 : 0; // 10 FPS inference
-    perfMode.inputScale = enabled ? 0.5 : 1;
   }
 
   applyPerformanceMode(false);
@@ -285,7 +281,7 @@ export async function runApp() {
         log("Initializing MediaPipe landmarkers…");
         const { poseLandmarker, faceLandmarker } = await createLandmarkers(log);
         log("Landmarkers ready; starting render loop.");
-        log("Detect path: IMAGE mode, CPU delegate, shared WebGL binding canvas, 2D frame snapshots.");
+        log("Detect path: VIDEO mode, CPU delegate, detectForVideo(webcam), shared WebGL binding canvas.");
         if (startCameraGateEl) startCameraGateEl.style.display = "none";
         startSessionEl?.removeAttribute("disabled");
         setSessionOverlay(
@@ -343,21 +339,11 @@ export async function runApp() {
               let poseResult;
               let faceResult = null;
               let openness = null;
+              const detectAtMs = globalThis.performance.now();
 
               try {
-                if (!frameCtx) {
-                  throw new Error("2D frame context unavailable for inference.");
-                }
-                const detectWidth = Math.max(160, Math.round(width * perfMode.inputScale));
-                const detectHeight = Math.max(90, Math.round(height * perfMode.inputScale));
-                if (frameCanvas.width !== detectWidth || frameCanvas.height !== detectHeight) {
-                  frameCanvas.width = detectWidth;
-                  frameCanvas.height = detectHeight;
-                }
-                frameCtx.drawImage(webcamEl, 0, 0, detectWidth, detectHeight);
-
                 try {
-                  poseResult = poseLandmarker.detect(frameCanvas);
+                  poseResult = poseLandmarker.detectForVideo(webcamEl, detectAtMs);
                 } catch (poseErr) {
                   const now = globalThis.performance.now();
                   if (now - lastDetectErrorLog > 2000) {
@@ -366,13 +352,13 @@ export async function runApp() {
                       poseErr instanceof Error
                         ? `${poseErr.name}: ${poseErr.message}\n${poseErr.stack || ""}`
                         : String(poseErr);
-                    log(`pose detect failed: ${msg}`, { level: "error" });
+                    log(`pose detectForVideo failed: ${msg}`, { level: "error" });
                   }
                   poseResult = null;
                 }
 
                 try {
-                  faceResult = faceLandmarker.detect(frameCanvas);
+                  faceResult = faceLandmarker.detectForVideo(webcamEl, detectAtMs);
                 } catch (faceErr) {
                   const now = globalThis.performance.now();
                   if (now - lastDetectErrorLog > 2000) {
@@ -381,7 +367,7 @@ export async function runApp() {
                       faceErr instanceof Error
                         ? `${faceErr.name}: ${faceErr.message}\n${faceErr.stack || ""}`
                         : String(faceErr);
-                    log(`face detect failed: ${msg}`, { level: "error" });
+                    log(`face detectForVideo failed: ${msg}`, { level: "error" });
                   }
                   faceResult = null;
                 }
@@ -403,7 +389,7 @@ export async function runApp() {
                   lastDetectErrorLog = now;
                   const msg =
                     e instanceof Error ? `${e.name}: ${e.message}\n${e.stack || ""}` : String(e);
-                  log(`frame prep failed: ${msg}`, { level: "error" });
+                  log(`detectForVideo failed: ${msg}`, { level: "error" });
                 }
                 poseResult = null;
                 faceResult = null;

@@ -46,7 +46,7 @@ export async function createLandmarkers(log) {
     PoseLandmarker.createFromOptions(vision, {
       canvas: mpCanvas,
       baseOptions: { modelAssetPath: MODEL_ASSET_PATH, delegate: "CPU" },
-      runningMode: "IMAGE",
+      runningMode: "VIDEO",
       numPoses: 1
     }),
     MODEL_INIT_TIMEOUT_MS,
@@ -60,7 +60,7 @@ export async function createLandmarkers(log) {
     FaceLandmarker.createFromOptions(vision, {
       canvas: mpCanvas,
       baseOptions: { modelAssetPath: FACE_MODEL_ASSET_PATH, delegate: "CPU" },
-      runningMode: "IMAGE",
+      runningMode: "VIDEO",
       numFaces: 1,
       outputFaceBlendshapes: false
     }),
