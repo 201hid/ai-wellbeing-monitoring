@@ -50,10 +50,54 @@ export async function runApp() {
     notLookingTimeEl,
     hudNotLookingTimeEl,
     shoulderWidthIncreaseThresholdEl,
-    shoulderWidthIncreaseThresholdValueEl
+    shoulderWidthIncreaseThresholdValueEl,
+    logEl,
+    copyLogEl,
+    clearLogEl
   } = dom;
 
-  const log = createLogger(null);
+  const log = createLogger(logEl);
+
+  async function copyLogTextToClipboard() {
+    const text = logEl?.textContent ?? "";
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    ta.setAttribute("readonly", "");
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    if (!ok) throw new Error("execCommand copy failed");
+  }
+
+  if (copyLogEl && logEl) {
+    const copyBtnDefaultLabel = copyLogEl.textContent;
+    copyLogEl.addEventListener("click", async () => {
+      try {
+        await copyLogTextToClipboard();
+        copyLogEl.textContent = "Copied!";
+        setTimeout(() => {
+          copyLogEl.textContent = copyBtnDefaultLabel;
+        }, 1600);
+      } catch {
+        log("Could not copy logs to clipboard.", { level: "warn" });
+      }
+    });
+  }
+
+  if (clearLogEl && logEl) {
+    clearLogEl.addEventListener("click", () => {
+      logEl.textContent = "";
+      log("Log cleared.");
+    });
+  }
+
   globalThis.addEventListener("error", (ev) => {
     log(
       `window.error: ${ev.message} (${ev.filename ?? "?"}:${ev.lineno ?? "?"})`,
